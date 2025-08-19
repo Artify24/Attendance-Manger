@@ -30,19 +30,36 @@ export class AttendanceModel {
     }
   }
 
-  // Update attendance for a specific subject and date
+  // Update attendance
   updateAttendance(
     currentData: AttendanceData,
     subject: string,
     date: string,
     status: AttendanceStatus,
   ): AttendanceData {
-    const updatedData: AttendanceData = {
-      ...currentData,
-      [subject]: {
-        ...(currentData[subject] || {}),
-        [date]: status,
-      },
+    const updatedData: AttendanceData = { ...currentData }
+
+    if (!updatedData[subject]) {
+      updatedData[subject] = {}
+    }
+
+    updatedData[subject] = {
+      ...updatedData[subject],
+      [date]: status,
+    }
+
+    return updatedData
+  }
+
+  // Remove attendance
+  removeAttendance(currentData: AttendanceData, subject: string, date: string): AttendanceData {
+    const updatedData: AttendanceData = { ...currentData }
+
+    if (updatedData[subject]) {
+      delete updatedData[subject][date]
+      if (Object.keys(updatedData[subject]).length === 0) {
+        delete updatedData[subject]
+      }
     }
 
     return updatedData
